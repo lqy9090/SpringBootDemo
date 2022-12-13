@@ -1,9 +1,9 @@
 package com.example.demo.customer;
 
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,20 +12,24 @@ import java.util.List;
  * @DateTime: 2022/12/11 14:45
  **/
 @RestController
-@RequestMapping("/api/v1/customer") //if hasn't this annotation,localhost:8080 404
-@Deprecated
-public class CustomerController {
+@RequestMapping("/api/v2/customer") //if hasn't this annotation,localhost:8080 404
+public class CustomerController2 {
     private final CustomerService customerService;
 
     @Autowired
-    public CustomerController(CustomerService customerService) { //依赖注入,但此时对象还没实例化
+    public CustomerController2(CustomerService customerService) { //依赖注入,但此时对象还没实例化
         this.customerService = customerService;
 //        this.customerService = new CustomerService(); //bad code;在构造函数实例化 会需要多次实例化?
     }
 
-    @GetMapping("/all")
+    @GetMapping
     List<Customer> getCustomer() {
         return customerService.getCustomers();
+    }
+
+    @GetMapping(path = "{customerId}")
+    Customer getCustomer(@PathVariable("customerId") Long id) {
+        return customerService.getCustomer(id);
     }
 
     @PostMapping
