@@ -11,14 +11,14 @@ import jakarta.validation.constraints.NotBlank;
  **/
 public class Customer {
     private final Long id;
-    @NotBlank
+    @NotBlank(message = "The name must not be empty.")
     private final String name;
 
-    @NotBlank
+    @NotBlank(message = "The password must not be empty.")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final String password;
 
-    @NotBlank
+    @NotBlank(message = "The email format must correct.")
     @Email
     private final String email;
 
