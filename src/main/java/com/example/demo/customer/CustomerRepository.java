@@ -1,5 +1,8 @@
 package com.example.demo.customer;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -8,12 +11,7 @@ import java.util.List;
  * @Description:
  * @DateTime: 2022/12/11 14:53
  **/
-public class CustomerRepository implements CustomerRepo{
-    @Override
-    public List<Customer> getCustomer() {
-        //TODO connected real DB
-        return Collections.singletonList(
-                new Customer(1L, "TODO connected real DB", "todo", "email@amigo.com")
-        );
-    }
+@Repository
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+
 }

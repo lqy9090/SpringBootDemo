@@ -1,6 +1,9 @@
 package com.example.demo.customer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -9,18 +12,26 @@ import jakarta.validation.constraints.NotBlank;
  * @Description:
  * @DateTime: 2022/12/11 14:46
  **/
+
+@Entity
+@Table
 public class Customer {
-    private final Long id;
+    @Id
+    private Long id;
     @NotBlank(message = "The name must not be empty.")
-    private final String name;
+    private String name;
 
     @NotBlank(message = "The password must not be empty.")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private final String password;
+    private String password;
 
     @NotBlank(message = "The email format must correct.")
     @Email
-    private final String email;
+    private String email;
+
+    public Customer() {
+
+    }
 
     public Customer(Long id, String name, String password, String email) {
         this.id = id;
