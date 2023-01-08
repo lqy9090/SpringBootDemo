@@ -1,5 +1,6 @@
 package com.example.demo.customer;
 
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,5 +41,23 @@ public class CustomerService {
                             LOGGER.error("Get customer {}", id, notFoundException);
                             return notFoundException;
                         });
+    }
+
+    public void addCustomer(Customer Customer) {
+        Boolean existsEmail = customerRepository.selectExistsEmail(Customer.getEmail());
+        if (existsEmail) {
+            throw new BadRequestException(
+                    "Email " + Customer.getEmail() + " taken");
+        }
+
+        customerRepository.save(Customer);
+    }
+
+    public void deleteCustomer(Long CustomerId) {
+        if(!customerRepository.existsById(CustomerId)) {
+            throw new NotFoundException(
+                    "Customer with id " + CustomerId + " does not exists");
+        }
+        customerRepository.deleteById(CustomerId);
     }
 }
