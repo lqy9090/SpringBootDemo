@@ -62,7 +62,7 @@ public class FileUploadController {
 
         System.out.println("inputStream: " + bytesToHexString(file.getInputStream().readAllBytes()));
         //限制文件类型的集合
-        Set<String> fileType = Set.of("jpg", "png");
+        Set<String> fileType = Set.of("jpg", "txt");
         FileTypeUtil.putFileType("77687920746865207374617", "txt");
         //检查文件类型
         String type = FileTypeUtil.getType(file.getInputStream());
