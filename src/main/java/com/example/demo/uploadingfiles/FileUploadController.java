@@ -1,7 +1,9 @@
 package com.example.demo.uploadingfiles;
 
+import cn.hutool.core.io.FileTypeUtil;
 import com.example.demo.uploadingfiles.exception.StorageFileNotFoundException;
 import com.example.demo.uploadingfiles.storage.StorageService;
+import org.aspectj.util.FileUtil;
 import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +16,9 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.nio.file.spi.FileTypeDetector;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -53,18 +58,54 @@ public class FileUploadController {
 
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
+                                   RedirectAttributes redirectAttributes) throws IOException {
 
-        storageService.store(file);
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
+        System.out.println("inputStream: " + bytesToHexString(file.getInputStream().readAllBytes()));
+        //限制文件类型的集合
+        Set<String> fileType = Set.of("jpg", "png");
+        FileTypeUtil.putFileType("77687920746865207374617", "txt");
+        //检查文件类型
+        String type = FileTypeUtil.getType(file.getInputStream());
+        System.out.println("type: " + type);
 
-        System.out.println("successfully uploaded" + file.getOriginalFilename());
+
+        // 判断是否在限制的文件类型集合中，如果为null，直接返回false
+        if (!Optional.ofNullable(type).map(fileType::contains).orElse(false)) {
+            redirectAttributes.addFlashAttribute("message",
+                    "You failed to uploaded " + file.getOriginalFilename() + "," +
+                            "with type " + type + ".");
+
+            System.out.println("faild uploaded" + file.getOriginalFilename());
+
+        } else {
+            storageService.store(file);
+            redirectAttributes.addFlashAttribute("message",
+                    "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+            System.out.println("successfully uploaded" + file.getOriginalFilename());
+        }
+
         return "redirect:/api/v1/storage/";
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
         return ResponseEntity.notFound().build();
+    }
+
+    public static String bytesToHexString(byte[] src) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        for (int i = 0; i < src.length; i++) {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
     }
 }
