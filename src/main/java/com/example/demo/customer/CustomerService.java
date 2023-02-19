@@ -1,13 +1,17 @@
 package com.example.demo.customer;
 
+import com.example.demo.customer.entity.Customer;
+import com.example.demo.customer.entity.ClassicCustomersRequest;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.NotFoundException;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Author: qiuyi
@@ -53,11 +57,51 @@ public class CustomerService {
         customerRepository.save(Customer);
     }
 
+    public void updateCustomer(Customer customer) {
+        Optional<Customer> optionalCustomer = customerRepository.findById(customer.getId());
+        if (optionalCustomer.isEmpty()) {
+            throw new BadRequestException(
+                    "Customer  " + customer.getId() + " not exist!");
+        }
+        customerRepository.save(customer);
+    }
+
     public void deleteCustomer(Long CustomerId) {
         if(!customerRepository.existsById(CustomerId)) {
             throw new NotFoundException(
                     "Customer with id " + CustomerId + " does not exists");
         }
         customerRepository.deleteById(CustomerId);
+    }
+
+    public List<Customer> getCustomersByConditionWithMethodName(ClassicCustomersRequest request) {
+        System.out.println("getCustomers condition: " + request);
+        List<Customer> customers = customerRepository.findCustomersByNameAndEmailOrderByIdDesc(request.getName(), request.getEmail());
+        return customers;
+    }
+
+    public List<Customer> getCustomersByConditionWithJPQL(ClassicCustomersRequest request) {
+        System.out.println("getCustomers condition: " + request);
+        List<Customer> customers = customerRepository.findCustomersByConditionOrderByIdDesc(request.getName(), request.getEmail());
+        return customers;
+    }
+
+    public List<Customer> getCustomersByConditionWithNativeSQL(ClassicCustomersRequest request) {
+        System.out.println("getCustomers condition: " + request);
+        List<Customer> customers = customerRepository.findCustomersByConditionOrderByIdDesc2(request.getName(), request.getEmail());
+        return customers;
+    }
+
+
+    @Transactional
+    public void RegisterCustomerAnResetPassword(Customer customer) {//the method unreasonable,just used to learn transaction usage
+
+        System.out.println("before save: " + customer);
+        //register
+       customerRepository.saveAndFlush(customer);
+        System.out.println("after save: " + customer);
+
+        //update
+        customerRepository.updateCustomerById("P@ssword", customer.getId()+1);
     }
 }

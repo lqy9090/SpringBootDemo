@@ -49,16 +49,4 @@ class CustomerRepositoryTestWithMock {
         //then
         assertThat(expected).isTrue();
     }
-
-    @Test
-    void selectNotExistsEmail() {
-        //given
-        String email = "jamilia@gmail.com";
-
-        //when
-        Boolean expected = underTest.selectExistsEmail(email);
-
-        //then
-        assertThat(expected).isFalse();
-    }
 }

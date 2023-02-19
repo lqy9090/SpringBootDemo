@@ -1,9 +1,7 @@
-package com.example.demo.customer;
+package com.example.demo.customer.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -17,6 +15,8 @@ import jakarta.validation.constraints.NotBlank;
 @Table
 public class Customer {
     @Id
+    @SequenceGenerator(name = "customer_id_sequence", sequenceName = "customer_id_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_id_sequence")
     private Long id;
     @NotBlank(message = "The name must not be empty.")
     private String name;
@@ -43,6 +43,11 @@ public class Customer {
     public Customer(String name, String password, String email) {
         this.name = name;
         this.password = password;
+        this.email = email;
+    }
+
+    public Customer(String name, String email) {
+        this.name = name;
         this.email = email;
     }
 

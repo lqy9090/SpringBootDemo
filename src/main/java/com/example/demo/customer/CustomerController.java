@@ -1,6 +1,6 @@
 package com.example.demo.customer;
 
-import jakarta.websocket.server.PathParam;
+import com.example.demo.customer.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

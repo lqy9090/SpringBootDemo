@@ -1,12 +1,11 @@
 package com.example.demo.customer;
 
-import com.example.demo.exception.ApiException;
+import com.example.demo.customer.entity.Customer;
 import com.example.demo.exception.ApiRequestException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -56,5 +55,11 @@ public class CustomerController2 {
     @DeleteMapping(path = "{customerId}")
     void DeleteCustomer(@PathVariable("customerId") Long id) {
         System.out.println("Request delete customer with Id "+id);
+    }
+
+    @PostMapping("/RegisterAndResetPassword")
+    void RegisterCustomerAnResetPassword(@Valid @RequestBody Customer customer) {
+        System.out.println("Request update Customer ...");
+        customerService.RegisterCustomerAnResetPassword(customer);
     }
 }

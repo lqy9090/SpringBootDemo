@@ -1,5 +1,7 @@
 package com.example.demo.customer;
 
+import com.example.demo.customer.entity.Customer;
+
 import java.util.List;
 
 /**

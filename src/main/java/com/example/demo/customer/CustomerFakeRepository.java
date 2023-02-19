@@ -1,6 +1,6 @@
 package com.example.demo.customer;
 
-import org.springframework.stereotype.Repository;
+import com.example.demo.customer.entity.Customer;
 
 import java.util.Arrays;
 import java.util.List;
